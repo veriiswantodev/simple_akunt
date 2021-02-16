@@ -21,7 +21,7 @@ class TransaksiController extends Controller
             'message' => 'List transaksi berdasarkan waktu',
             'data' => $transaksi
         ];
-        
+
         return response()->json($response, Response::HTTP_OK);
     }
 
@@ -40,19 +40,19 @@ class TransaksiController extends Controller
             'jumlah' => ['required', 'numeric'],
             'type' => ['required', 'in:pemasukan,pengeluaran']
         ]);
-        
+
         if ($validator->fails()) {
             return response()->json($validator->errors(),
             Response::HTTP_UNPROCESSABLE_ENTITY);
         }
-        
+
         try {
             $transaksi = Transaksi::create($request->all());
             $response = [
                 'message' => 'Transaksi dibuat',
                 'data' => $transaksi
             ];
-            
+
             return response()->json($response, Response::HTTP_CREATED);
         } catch (QueryException $e) {
             return respon()->json([
@@ -69,10 +69,23 @@ class TransaksiController extends Controller
      */
     public function show($id)
     {
-        //
+        $transaksi = Transaksi::findOrFail($id);
+
+        try {
+        $response = [
+        'message' => 'Detail Transaksi',
+        'data' => $transaksi
+        ];
+
+        return response()->json($response, Response::HTTP_OK);
+        } catch (QueryException $e) {
+        return respon()->json([
+        'message' => "Gagal " . $e->errorInfo
+        ]);
+        }
     }
 
-    
+
 
     /**
      * Update the specified resource in storage.
@@ -84,25 +97,25 @@ class TransaksiController extends Controller
     public function update(Request $request, $id)
     {
         $transaksi = Transaksi::findOrFail($id);
-        
+
         $validator = Validator::make($request->all(),[
             'judul' => ['required'],
             'jumlah' => ['required', 'numeric'],
             'type' => ['required', 'in:pemasukan,pengeluaran']
         ]);
-        
+
         if ($validator->fails()) {
             return response()->json($validator->errors(),
             Response::HTTP_UNPROCESSABLE_ENTITY);
         }
-        
+
         try {
             $transaksi->update($request->all());
             $response = [
                 'message' => 'Transaksi diedit',
                 'data' => $transaksi
             ];
-            
+
             return response()->json($response, Response::HTTP_OK);
         } catch (QueryException $e) {
             return respon()->json([
@@ -119,6 +132,19 @@ class TransaksiController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $transaksi = Transaksi::findOrFail($id);
+
+        try {
+        $transaksi->delete($id);
+        $response = [
+        'message' => 'Transaksi dihapus',
+        ];
+
+        return response()->json($response, Response::HTTP_OK);
+        } catch (QueryException $e) {
+        return respon()->json([
+        'message' => "Gagal " . $e->errorInfo
+        ]);
+        }
     }
 }

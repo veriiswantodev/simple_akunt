@@ -21,4 +21,6 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 Route::get('/transaksi', [TransaksiController::class, 'index']);
 Route::post('/transaksi', [TransaksiController::class, 'store']);
+Route::get('/transaksi/{id}', [TransaksiController::class, 'show']);
 Route::put('/transaksi/{id}', [TransaksiController::class, 'update']);
+Route::delete('/transaksi/{id}', [TransaksiController::class, 'destroy']);
